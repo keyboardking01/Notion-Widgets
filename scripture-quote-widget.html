@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scripture & Quote</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #0a0a0a;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh; padding: 0; margin: 0;
+  }
+  .wrap { background: #0a0a0a; width: 100%; padding: 20px 24px 24px; }
+  .divider { border: none; border-top: 0.5px solid #1e1e1e; margin-bottom: 20px; }
+  .block { margin-bottom: 20px; }
+  .block:last-child { margin-bottom: 0; }
+  .tag {
+    font-size: 9px; font-weight: 500; letter-spacing: 0.14em;
+    text-transform: uppercase; color: #E24B4A; margin-bottom: 8px;
+  }
+  .accent-line { width: 20px; height: 1px; background: #E24B4A; margin-bottom: 10px; }
+  .text { font-size: 13px; color: #888; line-height: 1.6; font-style: italic; }
+  .citation { font-size: 10px; color: #444; margin-top: 6px; letter-spacing: 0.06em; text-transform: uppercase; font-style: normal; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="divider"></div>
+  <div class="block">
+    <div class="tag">Scripture</div>
+    <div class="accent-line"></div>
+    <div class="text" id="scriptureText"></div>
+    <div class="citation" id="scriptureCite"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="tag">Quote</div>
+    <div class="accent-line"></div>
+    <div class="text" id="quoteText"></div>
+    <div class="citation" id="quoteCite"></div>
+  </div>
+</div>
+<script>
+const SCRIPTURES = [
+  { text: "I can do all things through Christ who strengthens me.", cite: "Philippians 4:13" },
+  { text: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.", cite: "Jeremiah 29:11" },
+  { text: "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.", cite: "Proverbs 3:5-6" },
+  { text: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.", cite: "Joshua 1:9" },
+  { text: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.", cite: "Romans 8:28" },
+  { text: "The Lord is my shepherd; I shall not want.", cite: "Psalm 23:1" },
+  { text: "Delight yourself in the Lord, and he will give you the desires of your heart.", cite: "Psalm 37:4" },
+  { text: "But those who hope in the Lord will renew their strength. They will soar on wings like eagles.", cite: "Isaiah 40:31" },
+  { text: "No weapon formed against you shall prosper.", cite: "Isaiah 54:17" },
+  { text: "Commit to the Lord whatever you do, and he will establish your plans.", cite: "Proverbs 16:3" },
+  { text: "The Lord will fight for you; you need only to be still.", cite: "Exodus 14:14" },
+  { text: "Do not conform to the pattern of this world, but be transformed by the renewing of your mind.", cite: "Romans 12:2" },
+  { text: "For God has not given us a spirit of fear, but of power and of love and of a sound mind.", cite: "2 Timothy 1:7" },
+  { text: "Ask and it will be given to you; seek and you will find; knock and the door will be opened to you.", cite: "Matthew 7:7" },
+  { text: "The heart of man plans his way, but the Lord establishes his steps.", cite: "Proverbs 16:9" },
+  { text: "Whatever you do, work at it with all your heart, as working for the Lord, not for human masters.", cite: "Colossians 3:23" },
+  { text: "Now to him who is able to do immeasurably more than all we ask or imagine, according to his power that is at work within us.", cite: "Ephesians 3:20" },
+  { text: "Be still, and know that I am God.", cite: "Psalm 46:10" },
+  { text: "The name of the Lord is a fortified tower; the righteous run to it and are safe.", cite: "Proverbs 18:10" },
+  { text: "I have been crucified with Christ and I no longer live, but Christ lives in me.", cite: "Galatians 2:20" },
+  { text: "Cast all your anxiety on him because he cares for you.", cite: "1 Peter 5:7" },
+  { text: "This is the day the Lord has made; let us rejoice and be glad in it.", cite: "Psalm 118:24" },
+  { text: "Greater is he that is in you than he that is in the world.", cite: "1 John 4:4" },
+  { text: "Let your light shine before others, that they may see your good deeds and glorify your Father in heaven.", cite: "Matthew 5:16" },
+  { text: "The Lord your God is in your midst, a mighty one who will save; he will rejoice over you with gladness.", cite: "Zephaniah 3:17" },
+  { text: "For it is God who works in you to will and to act in order to fulfill his good purpose.", cite: "Philippians 2:13" },
+  { text: "Seek first his kingdom and his righteousness, and all these things will be given to you as well.", cite: "Matthew 6:33" },
+  { text: "The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you.", cite: "Numbers 6:24-25" },
+  { text: "Even youths grow tired and weary, and young men stumble and fall; but those who hope in the Lord will renew their strength.", cite: "Isaiah 40:30-31" },
+  { text: "Whoever walks with the wise becomes wise, but the companion of fools will suffer harm.", cite: "Proverbs 13:20" },
+];
+
+const QUOTES = [
+  { text: "Creativity is intelligence having fun.", cite: "Albert Einstein" },
+  { text: "The two most important days in your life are the day you are born and the day you find out why.", cite: "Mark Twain" },
+  { text: "Do not go where the path may lead, go instead where there is no path and leave a trail.", cite: "Ralph Waldo Emerson" },
+  { text: "You are never too old to set another goal or to dream a new dream.", cite: "C.S. Lewis" },
+  { text: "The only way to do great work is to love what you do.", cite: "Steve Jobs" },
+  { text: "It does not matter how slowly you go as long as you do not stop.", cite: "Confucius" },
+  { text: "In the middle of every difficulty lies opportunity.", cite: "Albert Einstein" },
+  { text: "The future belongs to those who believe in the beauty of their dreams.", cite: "Eleanor Roosevelt" },
+  { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", cite: "Winston Churchill" },
+  { text: "Your time is limited, so don't waste it living someone else's life.", cite: "Steve Jobs" },
+  { text: "Whether you think you can or you think you can't, you're right.", cite: "Henry Ford" },
+  { text: "The man who has no imagination has no wings.", cite: "Muhammad Ali" },
+  { text: "It always seems impossible until it's done.", cite: "Nelson Mandela" },
+  { text: "Don't watch the clock; do what it does. Keep going.", cite: "Sam Levenson" },
+  { text: "Everything you've ever wanted is on the other side of fear.", cite: "George Addair" },
+  { text: "Start where you are. Use what you have. Do what you can.", cite: "Arthur Ashe" },
+  { text: "Champions keep playing until they get it right.", cite: "Billie Jean King" },
+  { text: "The secret of getting ahead is getting started.", cite: "Mark Twain" },
+  { text: "Spread love everywhere you go. Let no one ever come to you without leaving happier.", cite: "Mother Teresa" },
+  { text: "When you reach the end of your rope, tie a knot in it and hang on.", cite: "Franklin D. Roosevelt" },
+  { text: "You will face many defeats in life, but never let yourself be defeated.", cite: "Maya Angelou" },
+  { text: "The greatest glory in living lies not in never falling, but in rising every time we fall.", cite: "Nelson Mandela" },
+  { text: "In the end, it's not the years in your life that count. It's the life in your years.", cite: "Abraham Lincoln" },
+  { text: "Never let the fear of striking out keep you from playing the game.", cite: "Babe Ruth" },
+  { text: "Life is either a daring adventure or nothing at all.", cite: "Helen Keller" },
+  { text: "Many of life's failures are people who did not realize how close they were to success when they gave up.", cite: "Thomas A. Edison" },
+  { text: "You have brains in your head. You have feet in your shoes. You can steer yourself any direction you choose.", cite: "Dr. Seuss" },
+  { text: "The secret of change is to focus all of your energy not on fighting the old, but on building the new.", cite: "Socrates" },
+  { text: "A year from now you may wish you had started today.", cite: "Karen Lamb" },
+  { text: "Do what you can, with what you have, where you are.", cite: "Theodore Roosevelt" },
+];
+
+function getDayIndex(arr) {
+  const start = new Date(new Date().getFullYear(), 0, 0);
+  const diff = new Date() - start;
+  const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+  return day % arr.length;
+}
+
+const scripture = SCRIPTURES[getDayIndex(SCRIPTURES)];
+const quote = QUOTES[getDayIndex(QUOTES)];
+
+document.getElementById('scriptureText').textContent = '\u201C' + scripture.text + '\u201D';
+document.getElementById('scriptureCite').textContent = scripture.cite;
+document.getElementById('quoteText').textContent = '\u201C' + quote.text + '\u201D';
+document.getElementById('quoteCite').textContent = '\u2014 ' + quote.cite;
+</script>
+</body>
+</html>
